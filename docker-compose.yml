@@ -20,7 +20,7 @@ services:
   # Accounting service
   accounting:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-accounting
-    container_name: accounting
+    container_name: otel-accounting
     build:
       context: ./
       dockerfile: ${ACCOUNTING_DOCKERFILE}
@@ -47,7 +47,7 @@ services:
   # AdService
   ad:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-ad
-    container_name: ad
+    container_name: otel-ad
     build:
       context: ./
       dockerfile: ${AD_DOCKERFILE}
@@ -83,7 +83,7 @@ services:
   # Cart service
   cart:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-cart
-    container_name: cart
+    container_name: otel-cart
     build:
       context: ./
       dockerfile: ${CART_DOCKERFILE}
@@ -117,7 +117,7 @@ services:
   # Checkout service
   checkout:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-checkout
-    container_name: checkout
+    container_name: otel-checkout
     build:
       context: ./
       dockerfile: ${CHECKOUT_DOCKERFILE}
@@ -169,7 +169,7 @@ services:
   # Currency service
   currency:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-currency
-    container_name: currency
+    container_name: otel-currency
     build:
       context: ./
       dockerfile: ${CURRENCY_DOCKERFILE}
@@ -197,7 +197,7 @@ services:
   # Email service
   email:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-email
-    container_name: email
+    container_name: otel-email
     build:
       context: ./
       dockerfile: ${EMAIL_DOCKERFILE}
@@ -224,7 +224,7 @@ services:
   # Fraud Detection service
   fraud-detection:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-fraud-detection
-    container_name: fraud-detection
+    container_name: otel-fraud-detection
     build:
       context: ./
       dockerfile: ${FRAUD_DOCKERFILE}
@@ -257,7 +257,7 @@ services:
   # Frontend
   frontend:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend
-    container_name: frontend
+    container_name: otel-frontend
     build:
       context: ./
       dockerfile: ${FRONTEND_DOCKERFILE}
@@ -318,7 +318,7 @@ services:
   # Frontend Proxy (Envoy)
   frontend-proxy:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend-proxy
-    container_name: frontend-proxy
+    container_name: otel-frontend-proxy
     build:
       context: ./
       dockerfile: ${FRONTEND_PROXY_DOCKERFILE}
@@ -367,7 +367,7 @@ services:
   # image-provider
   image-provider:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-image-provider
-    container_name: image-provider
+    container_name: otel-image-provider
     build:
       context: ./
       dockerfile: ${IMAGE_PROVIDER_DOCKERFILE}
@@ -394,7 +394,7 @@ services:
   # Load Generator
   load-generator:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-load-generator
-    container_name: load-generator
+    container_name: otel-load-generator
     build:
       context: ./
       dockerfile: ${LOAD_GENERATOR_DOCKERFILE}
@@ -432,7 +432,7 @@ services:
   # Payment service
   payment:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-payment
-    container_name: payment
+    container_name: otel-payment
     build:
       context: ./
       dockerfile: ${PAYMENT_DOCKERFILE}
@@ -463,7 +463,7 @@ services:
   # Product Catalog service
   product-catalog:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-product-catalog
-    container_name: product-catalog
+    container_name: otel-product-catalog
     build:
       context: ./
       dockerfile: ${PRODUCT_CATALOG_DOCKERFILE}
@@ -497,7 +497,7 @@ services:
   # Quote service
   quote:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-quote
-    container_name: quote
+    container_name: otel-quote
     build:
       context: ./
       dockerfile: ${QUOTE_DOCKERFILE}
@@ -525,7 +525,7 @@ services:
   # Recommendation service
   recommendation:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-recommendation
-    container_name: recommendation
+    container_name: otel-recommendation
     build:
       context: ./
       dockerfile: ${RECOMMENDATION_DOCKERFILE}
@@ -561,7 +561,7 @@ services:
   # Shipping service
   shipping:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-shipping
-    container_name: shipping
+    container_name: otel-shipping
     build:
       context: ./
       dockerfile: ${SHIPPING_DOCKERFILE}
@@ -591,7 +591,7 @@ services:
   # Flagd, feature flagging service
   flagd:
     image: ${FLAGD_IMAGE}
-    container_name: flagd
+    container_name: otel-flagd
     deploy:
       resources:
         limits:
@@ -617,7 +617,7 @@ services:
   # Flagd UI for configuring the feature flag service
   flagd-ui:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-flagd-ui
-    container_name: flagd-ui
+    container_name: otel-flagd-ui
     build:
       context: ./
       dockerfile: ${FLAGD_UI_DOCKERFILE}
@@ -644,7 +644,7 @@ services:
   # Kafka used by Checkout, Accounting, and Fraud Detection services
   kafka:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-kafka
-    container_name: kafka
+    container_name: otel-kafka
     build:
       context: ./
       dockerfile: ${KAFKA_DOCKERFILE}
@@ -677,7 +677,7 @@ services:
   # Valkey used by Cart service
   valkey-cart:
     image: ${VALKEY_IMAGE}
-    container_name: valkey-cart
+    container_name: otel-valkey-cart
     user: valkey
     deploy:
       resources:
@@ -695,7 +695,7 @@ services:
   # Jaeger
   jaeger:
     image: ${JAEGERTRACING_IMAGE}
-    container_name: jaeger
+    container_name: otel-jaeger
     command:
       - "--memory.max-traces=25000"
       - "--query.base-path=/jaeger/ui"
@@ -717,7 +717,7 @@ services:
   # Grafana
   grafana:
     image: ${GRAFANA_IMAGE}
-    container_name: grafana
+    container_name: otel-grafana
     deploy:
       resources:
         limits:
@@ -735,7 +735,7 @@ services:
   # OpenTelemetry Collector
   otel-collector:
     image: ${COLLECTOR_CONTRIB_IMAGE}
-    container_name: otel-collector
+    container_name: otel-otel-collector
     deploy:
       resources:
         limits:
@@ -767,7 +767,7 @@ services:
   # Prometheus
   prometheus:
     image: ${PROMETHEUS_IMAGE}
-    container_name: prometheus
+    container_name: otel-prometheus
     command:
       - --web.console.templates=/etc/prometheus/consoles
       - --web.console.libraries=/etc/prometheus/console_libraries
@@ -792,7 +792,7 @@ services:
   # OpenSearch
   opensearch:
     image: ${OPENSEARCH_IMAGE}
-    container_name: opensearch
+    container_name: otel-opensearch
     deploy:
       resources:
         limits:
