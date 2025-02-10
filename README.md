@@ -1,139 +1,259 @@
-<!-- markdownlint-disable-next-line -->
-# <img src="https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png" alt="OTel logo" width="45"> OpenTelemetry Demo
+# OpenTelemetry Demo Helm Chart
 
-[![Slack](https://img.shields.io/badge/slack-@cncf/otel/demo-brightgreen.svg?logo=slack)](https://cloud-native.slack.com/archives/C03B4CWV4DA)
-[![Version](https://img.shields.io/github/v/release/open-telemetry/opentelemetry-demo?color=blueviolet)](https://github.com/open-telemetry/opentelemetry-demo/releases)
-[![Commits](https://img.shields.io/github/commits-since/open-telemetry/opentelemetry-demo/latest?color=ff69b4&include_prereleases)](https://github.com/open-telemetry/opentelemetry-demo/graphs/commit-activity)
-[![Downloads](https://img.shields.io/docker/pulls/otel/demo)](https://hub.docker.com/r/otel/demo)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?color=red)](https://github.com/open-telemetry/opentelemetry-demo/blob/main/LICENSE)
-[![Integration Tests](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml/badge.svg)](https://github.com/open-telemetry/opentelemetry-demo/actions/workflows/run-integration-tests.yml)
-[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/opentelemetry-demo)](https://artifacthub.io/packages/helm/opentelemetry-helm/opentelemetry-demo)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9247/badge)](https://www.bestpractices.dev/en/projects/9247)
+The helm chart installs [OpenTelemetry Demo](https://github.com/open-telemetry/opentelemetry-demo)
+in kubernetes cluster.
 
-## Welcome to the OpenTelemetry Astronomy Shop Demo
+## Prerequisites
 
-This repository contains the OpenTelemetry Astronomy Shop, a microservice-based
-distributed system intended to illustrate the implementation of OpenTelemetry in
-a near real-world environment.
+- Kubernetes 1.24+
+- Helm 3.14+
 
-Our goals are threefold:
+## Installing the Chart
 
-- Provide a realistic example of a distributed system that can be used to
-  demonstrate OpenTelemetry instrumentation and observability.
-- Build a base for vendors, tooling authors, and others to extend and
-  demonstrate their OpenTelemetry integrations.
-- Create a living example for OpenTelemetry contributors to use for testing new
-  versions of the API, SDK, and other components or enhancements.
+Add OpenTelemetry Helm repository:
 
-We've already made [huge
-progress](https://github.com/open-telemetry/opentelemetry-demo/blob/main/CHANGELOG.md),
-and development is ongoing. We hope to represent the full feature set of
-OpenTelemetry across its languages in the future.
+```console
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+```
 
-If you'd like to help (**which we would love**), check out our [contributing
-guidance](./CONTRIBUTING.md).
+To install the chart with the release name my-otel-demo, run the following command:
 
-If you'd like to extend this demo or maintain a fork of it, read our
-[fork guidance](https://opentelemetry.io/docs/demo/forking/).
+```console
+helm install my-otel-demo open-telemetry/opentelemetry-demo
+```
 
-## Quick start
+## Upgrading
 
-You can be up and running with the demo in a few minutes. Check out the docs for
-your preferred deployment method:
+See [UPGRADING.md](UPGRADING.md).
 
-- [Docker](https://opentelemetry.io/docs/demo/docker_deployment/)
-- [Kubernetes](https://opentelemetry.io/docs/demo/kubernetes_deployment/)
+## OpenShift
 
-## Documentation
+Installing the chart on OpenShift requires the following additional steps:
 
-For detailed documentation, see [Demo Documentation][docs]. If you're curious
-about a specific feature, the [docs landing page][docs] can point you in the
-right direction.
+1. Create a new project:
 
-## Demos featuring the Astronomy Shop
+```console
+oc new-project opentelemetry-demo
+```
 
-We welcome any vendor to fork the project to demonstrate their services and
-adding a link below. The community is committed to maintaining the project and
-keeping it up to date for you.
+2. Create a new service account:
 
-|                           |                |                                  |
-|---------------------------|----------------|----------------------------------|
-| [AlibabaCloud LogService] | [Elastic]      | [OpenSearch]                     |
-| [AppDynamics]             | [Google Cloud] | [Sentry]                         |
-| [Aspecto]                 | [Grafana Labs] | [ServiceNow Cloud Observability] |
-| [Axiom]                   | [Guance]       | [Splunk]                         |
-| [Axoflow]                 | [Honeycomb.io] | [Sumo Logic]                     |
-| [Azure Data Explorer]     | [Instana]      | [TelemetryHub]                   |
-| [Coralogix]               | [Kloudfuse]    | [Teletrace]                      |
-| [Dash0]                   | [Liatrio]      | [Tracetest]                      |
-| [Datadog]                 | [Logz.io]      | [Uptrace]                        |
-| [Dynatrace]               | [New Relic]    |                                  |
+```console
+oc create sa opentelemetry-demo
+```
 
-## Contributing
+3. Add the service account to the `anyuid` SCC (may require cluster admin):
 
-To get involved with the project see our [CONTRIBUTING](CONTRIBUTING.md)
-documentation. Our [SIG Calls](CONTRIBUTING.md#join-a-sig-call) are every other
-Monday at 8:30 AM PST and anyone is welcome.
+```console
+oc adm policy add-scc-to-user anyuid -z opentelemetry-demo
+```
 
-## Project leadership
+4. Add `view` role to the service account to allow Prometheus seeing the services pods:
 
-[Maintainers](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#maintainer)
-([@open-telemetry/demo-maintainers](https://github.com/orgs/open-telemetry/teams/demo-maintainers)):
+```console
+oc adm policy add-role-to-user view -z opentelemetry-demo
+```
 
-- [Juliano Costa](https://github.com/julianocosta89), Datadog
-- [Mikko Viitanen](https://github.com/mviitane), Dynatrace
-- [Pierre Tessier](https://github.com/puckpuck), Honeycomb
+5. Add `privileged` SCC to the service account to allow Grafana to run:
 
-[Approvers](https://github.com/open-telemetry/community/blob/main/guides/contributor/membership.md#approver)
-([@open-telemetry/demo-approvers](https://github.com/orgs/open-telemetry/teams/demo-approvers)):
+```console
+oc adm policy add-scc-to-user privileged -z opentelemetry-demo
+```
 
-- [Cedric Ziel](https://github.com/cedricziel) Grafana Labs
-- [Penghan Wang](https://github.com/wph95), AppDynamics
-- [Reiley Yang](https://github.com/reyang), Microsoft
-- [Roger Coll](https://github.com/rogercoll), Elastic
-- [Ziqi Zhao](https://github.com/fatsheep9146), Alibaba
+6. Install the chart with the following command:
 
-Emeritus:
+```console
+helm install my-otel-demo charts/opentelemetry-demo \
+    --namespace opentelemetry-demo \
+    --set serviceAccount.create=false \
+    --set serviceAccount.name=opentelemetry-demo \
+    --set prometheus.rbac.create=false \
+    --set prometheus.serviceAccounts.server.create=false \
+    --set prometheus.serviceAccounts.server.name=opentelemetry-demo \
+    --set grafana.rbac.create=false \
+    --set grafana.serviceAccount.create=false \
+    --set grafana.serviceAccount.name=opentelemetry-demo
+```
 
-- [Austin Parker](https://github.com/austinlparker)
-- [Carter Socha](https://github.com/cartersocha)
-- [Michael Maxwell](https://github.com/mic-max)
-- [Morgan McLean](https://github.com/mtwo)
+## Chart Parameters
 
-### Thanks to all the people who have contributed
+Chart parameters are separated in 4 general sections:
+* Default - Used to specify defaults applied to all demo components
+* Components - Used to configure the individual components (microservices) for
+the demo
+* Observability - Used to enable/disable dependencies
+* Sub-charts - Configuration for all sub-charts
 
-[![contributors](https://contributors-img.web.app/image?repo=open-telemetry/opentelemetry-demo)](https://github.com/open-telemetry/opentelemetry-demo/graphs/contributors)
+### Default parameters (applied to all demo components)
 
-[docs]: https://opentelemetry.io/docs/demo/
+| Property                               | Description                                                                               | Default                                              |
+|----------------------------------------|-------------------------------------------------------------------------------------------|------------------------------------------------------|
+| `default.env`                          | Environment variables added to all components                                             | Array of several OpenTelemetry environment variables |
+| `default.envOverrides`                 | Used to override individual environment variables without re-specifying the entire array. | `[]`                                                 |
+| `default.image.repository`             | Demo components image name                                                                | `otel/demo`                                          |
+| `default.image.tag`                    | Demo components image tag (leave blank to use app version)                                | `nil`                                                |
+| `default.image.pullPolicy`             | Demo components image pull policy                                                         | `IfNotPresent`                                       |
+| `default.image.pullSecrets`            | Demo components image pull secrets                                                        | `[]`                                                 |
+| `default.replicas`                     | Number of replicas for each component                                                     | `1`                                                  |
+| `default.schedulingRules.nodeSelector` | Node labels for pod assignment                                                            | `{}`                                                 |
+| `default.schedulingRules.affinity`     | Man of node/pod affinities                                                                | `{}`                                                 |
+| `default.schedulingRules.tolerations`  | Tolerations for pod assignment                                                            | `[]`                                                 |
+| `default.securityContext`              | Demo components container security context                                                | `{}`                                                 |
+| `serviceAccount.annotations`           | Annotations for the serviceAccount                                                        | `{}`                                                 |
+| `serviceAccount.create`                | Whether to create a serviceAccount or use an existing one                                 | `true`                                               |
+| `serviceAccount.name`                  | The name of the ServiceAccount to use for demo components                                 | `""`                                                 |
 
-<!-- Links for Demos featuring the Astronomy Shop section -->
+### Component parameters
 
-[AlibabaCloud LogService]: https://github.com/aliyun-sls/opentelemetry-demo
-[AppDynamics]: https://community.appdynamics.com/t5/Knowledge-Base/How-to-observe-OpenTelemetry-demo-app-in-Splunk-AppDynamics/ta-p/58584
-[Aspecto]: https://github.com/aspecto-io/opentelemetry-demo
-[Axiom]: https://play.axiom.co/axiom-play-qf1k/dashboards/otel.traces.otel-demo-traces
-[Axoflow]: https://axoflow.com/opentelemetry-support-in-more-detail-in-axosyslog-and-syslog-ng/
-[Azure Data Explorer]: https://github.com/Azure/Azure-kusto-opentelemetry-demo
-[Coralogix]: https://coralogix.com/blog/configure-otel-demo-send-telemetry-data-coralogix
-[Dash0]: https://github.com/dash0hq/opentelemetry-demo
-[Datadog]: https://docs.datadoghq.com/opentelemetry/guide/otel_demo_to_datadog
-[Dynatrace]: https://www.dynatrace.com/news/blog/opentelemetry-demo-application-with-dynatrace/
-[Elastic]: https://github.com/elastic/opentelemetry-demo
-[Google Cloud]: https://github.com/GoogleCloudPlatform/opentelemetry-demo
-[Grafana Labs]: https://github.com/grafana/opentelemetry-demo
-[Guance]: https://github.com/GuanceCloud/opentelemetry-demo
-[Honeycomb.io]: https://github.com/honeycombio/opentelemetry-demo
-[Instana]: https://github.com/instana/opentelemetry-demo
-[Kloudfuse]: https://github.com/kloudfuse/opentelemetry-demo
-[Liatrio]: https://github.com/liatrio/opentelemetry-demo
-[Logz.io]: https://logz.io/learn/how-to-run-opentelemetry-demo-with-logz-io/
-[New Relic]: https://github.com/newrelic/opentelemetry-demo
-[OpenSearch]: https://github.com/opensearch-project/opentelemetry-demo
-[Sentry]: https://github.com/getsentry/opentelemetry-demo
-[ServiceNow Cloud Observability]: https://docs.lightstep.com/otel/quick-start-operator#send-data-from-the-opentelemetry-demo
-[Splunk]: https://github.com/signalfx/opentelemetry-demo
-[Sumo Logic]: https://www.sumologic.com/blog/common-opentelemetry-demo-application/
-[TelemetryHub]: https://github.com/TelemetryHub/opentelemetry-demo/tree/telemetryhub-backend
-[Teletrace]: https://github.com/teletrace/opentelemetry-demo
-[Tracetest]: https://github.com/kubeshop/opentelemetry-demo
-[Uptrace]: https://github.com/uptrace/uptrace/tree/master/example/opentelemetry-demo
+The OpenTelemetry demo contains several components (microservices). Each
+component is configured with a common set of parameters. All components will
+be defined within `components.[NAME]` where `[NAME]` is the name of the demo
+component.
+
+> **Note**
+> The following parameters require a `components.[NAME].` prefix where `[NAME]`
+> is the name of the demo component
+
+
+| Parameter                              | Description                                                                                                | Default                                                       |
+|----------------------------------------|------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| `enabled`                              | Is this component enabled                                                                                  | `true`                                                        |
+| `useDefault.env`                       | Use the default environment variables in this component                                                    | `true`                                                        |
+| `imageOverride.repository`             | Name of image for this component                                                                           | Defaults to the overall default image repository              |
+| `imageOverride.tag`                    | Tag of the image for this component                                                                        | Defaults to the overall default image tag                     |
+| `imageOverride.pullPolicy`             | Image pull policy for this component                                                                       | `IfNotPresent`                                                |
+| `imageOverride.pullSecrets`            | Image pull secrets for this component                                                                      | `[]`                                                          |
+| `service.type`                         | Service type used for this component                                                                       | `ClusterIP`                                                   |
+| `service.port`                         | Service port used for this component                                                                       | `nil`                                                         |
+| `service.nodePort`                     | Service node port used for this component                                                                  | `nil`                                                         |
+| `service.annotations`                  | Annotations to add to the component's service                                                              | `{}`                                                          |
+| `ports`                                | Array of ports to open for deployment and service of this component                                        | `[]`                                                          |
+| `env`                                  | Array of environment variables added to this component                                                     | Each component will have its own set of environment variables |
+| `envOverrides`                         | Used to override individual environment variables without re-specifying the entire array                   | `[]`                                                          |
+| `replicas`                             | Number of replicas for this component                                                                      | `1` for kafka, and redis ; `nil` otherwise       |
+| `resources`                            | CPU/Memory resource requests/limits                                                                        | Each component will have a default memory limit set           |
+| `schedulingRules.nodeSelector`         | Node labels for pod assignment                                                                             | `{}`                                                          |
+| `schedulingRules.affinity`             | Man of node/pod affinities                                                                                 | `{}`                                                          |
+| `schedulingRules.tolerations`          | Tolerations for pod assignment                                                                             | `[]`                                                          |
+| `securityContext`                      | Container security context to define user ID (UID), group ID (GID) and other security policies             | `{}`                                                          |
+| `podSecurityContext`                   | Pod security context to define user ID (UID), group ID (GID) and other security policies                   | `{}`                                                          |
+| `podAnnotations`                       | Pod annotations for this component                                                                         | `{}`                                                          |
+| `ingress.enabled`                      | Enable the creation of Ingress rules                                                                       | `false`                                                       |
+| `ingress.annotations`                  | Annotations to add to the ingress rule                                                                     | `{}`                                                          |
+| `ingress.ingressClassName`             | Ingress class to use. If not specified default Ingress class will be used.                                 | `nil`                                                         |
+| `ingress.hosts`                        | Array of Hosts to use for the ingress rule.                                                                | `[]`                                                          |
+| `ingress.hosts[].paths`                | Array of paths / routes to use for the ingress rule host.                                                  | `[]`                                                          |
+| `ingress.hosts[].paths[].path`         | Actual path route to use                                                                                   | `nil`                                                         |
+| `ingress.hosts[].paths[].pathType`     | Path type to use for the given path. Typically this is `Prefix`.                                           | `nil`                                                         |
+| `ingress.hosts[].paths[].port`         | Port to use for the given path                                                                             | `nil`                                                         |
+| `ingress.additionalIngresses`          | Array of additional ingress rules to add. This is handy if you need to differently annotated ingress rules | `[]`                                                          |
+| `ingress.additionalIngresses[].name`   | Each additional ingress rule needs to have a unique name                                                   | `nil`                                                         |
+| `command`                              | Command & arguments to pass to the container being spun up for this service                                | `[]`                                                          |
+| `mountedConfigMaps[].name`             | Name of the Volume that will be used for the ConfigMap mount                                               | `nil`                                                         |
+| `mountedConfigMaps[].mountPath`        | Path where the ConfigMap data will be mounted                                                              | `nil`                                                         |
+| `mountedConfigMaps[].subPath`          | SubPath within the mountPath. Used to mount a single file into the path.                                   | `nil`                                                         |
+| `mountedConfigMaps[].existingConfigMap` | Name of the existing ConfigMap to mount                                                                    | `nil`                                                         |
+| `mountedConfigMaps[].data`             | Contents of a ConfigMap. Keys should be the names of the files to be mounted.                              | `{}`                                                          |
+| `initContainers`                       | Array of init containers to add to the pod                                                                 | `[]`                                                          |
+| `initContainers[].name`                | Name of the init container                                                                                 | `nil`                                                         |
+| `initContainers[].image`               | Image to use for the init container                                                                        | `nil`                                                         |
+| `initContainers[].command`             | Command to run for the init container                                                                      | `nil`                                                         |
+| `sidecarContainers`                    | Array of sidecar containers to add to the pod                                                              | `[]`                                                          |
+| `additionalVolumes`                    | Array of additional volumes to add to the pod                                                              | `[]`                                                          |
+
+### Sub-charts
+
+The OpenTelemetry Demo Helm chart depends on 5 sub-charts:
+* OpenTelemetry Collector
+* Jaeger
+* Prometheus
+* Grafana
+* OpenSearch
+
+Parameters for each sub-chart can be specified within that sub-chart's
+respective top level. This chart will override some of the dependent sub-chart
+parameters by default. The overriden parameters are specified below.
+
+#### OpenTelemetry Collector
+
+> **Note**
+> The following parameters have a `opentelemetry-collector.` prefix.
+
+| Parameter        | Description                                        | Default                                                  |
+|------------------|----------------------------------------------------|----------------------------------------------------------|
+| `enabled`        | Install the OpenTelemetry collector                | `true`                                                   |
+| `nameOverride`   | Name that will be used by the sub-chart release    | `otelcol`                                                |
+| `mode`           | The Deployment or Daemonset mode                   | `deployment`                                             |
+| `resources`      | CPU/Memory resource requests/limits                | 100Mi memory limit                                       |
+| `service.type`   | Service Type to use                                | `ClusterIP`                                              |
+| `ports`          | Ports to enabled for the collector pod and service | `metrics` is enabled and `prometheus` is defined/enabled |
+| `podAnnotations` | Pod annotations                                    | Annotations leveraged by Prometheus scrape               |
+| `config`         | OpenTelemetry Collector configuration              | Configuration required for demo                          |
+
+#### Jaeger
+
+> **Note**
+> The following parameters have a `jaeger.` prefix.
+
+| Parameter                      | Description                                        | Default                                                               |
+|--------------------------------|----------------------------------------------------|-----------------------------------------------------------------------|
+| `enabled`                      | Install the Jaeger sub-chart                       | `true`                                                                |
+| `provisionDataStore.cassandra` | Provision a cassandra data store                   | `false` (required for AllInOne mode)                                  |
+| `allInOne.enabled`             | Enable All in One In-Memory Configuration          | `true`                                                                |
+| `allInOne.args`                | Command arguments to pass to All in One deployment | `["--memory.max-traces", "10000", "--query.base-path", "/jaeger/ui"]` |
+| `allInOne.resources`           | CPU/Memory resource requests/limits for All in One | 275Mi memory limit                                                    |
+| `storage.type`                 | Storage type to use                                | `none` (required for AllInOne mode)                                   |
+| `agent.enabled`                | Enable Jaeger agent                                | `false` (required for AllInOne mode)                                  |
+| `collector.enabled`            | Enable Jaeger Collector                            | `false` (required for AllInOne mode)                                  |
+| `query.enabled`                | Enable Jaeger Query                                | `false` (required for AllInOne mode)                                  |
+
+#### Prometheus
+
+> **Note**
+> The following parameters have a `prometheus.` prefix.
+
+| Parameter                            | Description                                    | Default                                                   |
+|--------------------------------------|------------------------------------------------|-----------------------------------------------------------|
+| `enabled`                            | Install the Prometheus sub-chart               | `true`                                                    |
+| `alertmanager.enabled`               | Install the alertmanager                       | `false`                                                   |
+| `configmapReload.prometheus.enabled` | Install the configmap-reload container         | `false`                                                   |
+| `kube-state-metrics.enabled`         | Install the kube-state-metrics sub-chart       | `false`                                                   |
+| `prometheus-node-exporter.enabled`   | Install the Prometheus Node Exporter sub-chart | `false`                                                   |
+| `prometheus-pushgateway.enabled`     | Install the Prometheus Push Gateway sub-chart  | `false`                                                   |
+| `server.extraFlags`                  | Additional flags to add to Prometheus server   | `["enable-feature=exemplar-storage"]`                     |
+| `server.persistentVolume.enabled`    | Enable persistent storage for Prometheus data  | `false`                                                   |
+| `server.global.scrape_interval`      | How frequently to scrape targets by default    | `5s`                                                      |
+| `server.global.scrap_timeout`        | How long until a scrape request times out      | `3s`                                                      |
+| `server.global.evaluation_interval`  | How frequently to evaluate rules               | `30s`                                                     |
+| `service.servicePort`                | Service port used                              | `9090`                                                    |
+| `serverFiles.prometheus.yml`         | Prometheus configuration file                  | Scrape config to get metrics from OpenTelemetry collector |
+
+#### Grafana
+
+> **Note**
+> The following parameters have a `grafana.` prefix.
+
+| Parameter             | Description                                        | Default                                                              |
+|-----------------------|----------------------------------------------------|----------------------------------------------------------------------|
+| `enabled`             | Install the Grafana sub-chart                      | `true`                                                               |
+| `grafana.ini`         | Grafana's primary configuration                    | Enables anonymous login, and proxy through the frontendProxy service |
+| `adminPassword`       | Password used by `admin` user                      | `admin`                                                              |
+| `rbac.pspEnabled`     | Enable PodSecurityPolicy resources                 | `false`                                                              |
+| `datasources`         | Configure grafana datasources (passed through tpl) | Prometheus and Jaeger data sources                                   |
+| `dashboardProviders`  | Configure grafana dashboard providers              | Defines a `default` provider based on a file path                    |
+| `dashboardConfigMaps` | ConfigMaps reference that contains dashboards      | Dashboard config map deployed with this Helm chart                   |
+
+#### OpenSearch
+> **Note**
+> The following parameters have a `opensearch.` prefix.
+
+| Parameter             | Description                                       | Default                                  |
+|-----------------------|---------------------------------------------------|------------------------------------------|
+| `enabled`             | Install the OpenSearch sub-chart                  | `true`                                   |
+| `fullnameOverride`    | Name that will be used by the sub-chart release   | `otel-demo-opensearch`                   |
+| `clusterName`         | Name of the OpenSearch cluster                    | `demo-cluster`                           |
+| `nodeGroup`           | OpenSearch Node group configuration               | `otel-demo`                              |
+| `singleNode`          | Deploy a single node OpenSearch cluster           | `true`                                   |
+| `opensearchJavaOpts`  | Java options for OpenSearch JVM                   | `-Xms300m -Xmx300m`                      |
+| `persistence.enabled` | Enable persistent storage for OpenSearch data     | `false`                                  |
+| `extraEnvs`           | Additional environment variables for OpenSearch   | Disables demo config and security plugin |

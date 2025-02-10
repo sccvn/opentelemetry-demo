@@ -4,16 +4,16 @@ name: Checks
 
 on:
   push:
-    branches: [ main ]
+    branches: [ mainfork ]
   pull_request:
-    branches: [ main ]
+    branches: [ mainfork ]
   workflow_dispatch:
 
 jobs:
   build_images:
     uses: ./.github/workflows/component-build-images.yml
     with:
-      push: false
+      push: true
       version: 'dev'
 
   markdownlint:
