@@ -16,7 +16,7 @@ on:
         type: string
       dockerhub_repo:
         description: Docker Hub repository
-        default: 'fgst/demo'
+        default: 'ocpasia/demo'
         required: false
         type: string
       ghcr_repo:
