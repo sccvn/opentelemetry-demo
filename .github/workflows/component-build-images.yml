@@ -21,7 +21,7 @@ on:
         type: string
       ghcr_repo:
         description: GHCR repository
-        default: 'ghcr.io/sccvn-open-telemetry/otel-demo'
+        default: 'ghcr.io/sccvn/otel-demo'
         required: false
         type: string
 
