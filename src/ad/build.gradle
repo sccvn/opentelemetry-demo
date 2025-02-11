@@ -105,7 +105,10 @@ afterEvaluate {
 }
 
 googleJavaFormat {
-    toolVersion '1.18.1'
+    toolVersion = '1.18.1'
+    source = sourceSets*.allJava
+    include 'src/main/java/**/*.java'
+    exclude 'build/**'
 }
 
 // Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
@@ -137,7 +140,7 @@ task ad(type: CreateStartScripts) {
     classpath = startScripts.classpath
 }
 
-applicationDistribution.into('bin') {
-    from(ad)
-    fileMode = 0755
-}
+//applicationDistribution.into('bin') {
+//    from(ad)
+//    fileMode = 0755
+//}
