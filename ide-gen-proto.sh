@@ -43,7 +43,7 @@ gen_proto_js() {
 gen_proto_python() {
   echo "Generating Python protobuf files for $1"
   cd "$base_dir"/src/"$1" || return
-  python3 -m grpc_tools.protoc -I=../../pb --python_out=./ --grpc_python_out=./ ./../../pb/demo.proto
+  python -m grpc_tools.protoc -I=../../pb --python_out=./ --grpc_python_out=./ ./../../pb/demo.proto
   cd "$base_dir" || return
 }
 
