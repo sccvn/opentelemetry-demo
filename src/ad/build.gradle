@@ -107,7 +107,7 @@ afterEvaluate {
 googleJavaFormat {
     toolVersion = '1.18.1'
     source = sourceSets*.allJava
-    include 'src/main/java/**/*.java'
+    include 'src/main/java/oteldemo/**/*.java'
     exclude 'build/**'
 }
 
